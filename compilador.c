@@ -4,9 +4,8 @@
 int main() {
     FILE *arquivoSaida;
     char linha[100];
-    int resultado = 0;
 
-    arquivoSaida = fopen("tokens.txt", "r");
+    arquivoSaida = fopen("teste.joao", "r");
 
     if (arquivoSaida == NULL) {
         printf("Erro ao abrir o arquivo de saída.\n");
@@ -14,42 +13,40 @@ int main() {
     }
 
     while (fgets(linha, sizeof(linha), arquivoSaida)) {
-        int posicaoDoMultiplique = -1;
-        int posicaoDoSome = -1;
-        int posicaoDoDiminua = -1;
+        int resultado = 0;
+        int num, temp;
         char instrucao[20];
-        int num;
+        char *token;
+        int multiplicacao = 0;
 
-        if (sscanf(linha, "%s %d", instrucao, &num) == 2) {
-            if (strcmp(instrucao, "multiplique") == 0) {
-                posicaoDoMultiplique = num;
-            } else if (strcmp(instrucao, "some") == 0) {
-                posicaoDoSome = num;
-            } else if (strcmp(instrucao, "diminua") == 0) {
-                posicaoDoDiminua = num;
-            }
-        }
+        token = strtok(linha, " ");
 
-        if (posicaoDoMultiplique != -1) {
-            int sentencaAnterior = posicaoDoMultiplique - 1;
-            int sentencaPosterior = posicaoDoMultiplique + 1;
-            resultado = sentencaAnterior * sentencaPosterior;
-            printf("Resultado: %d\n", resultado);
-        } else {
-            if (posicaoDoSome != -1) {
-                int sentencaAnterior = posicaoDoSome - 1;
-                int sentencaPosterior = posicaoDoSome + 1;
-                resultado = sentencaAnterior + sentencaPosterior;
-                printf("Resultado: %d\n", resultado);
+        while (token != NULL) {
+            if (multiplicacao) {
+                token = strtok(NULL, " ");
+                num = atoi(token);
+                resultado *= num;
+                multiplicacao = 0;
             } else {
-                if (posicaoDoDiminua != -1) {
-                    int sentencaAnterior = posicaoDoDiminua - 1;
-                    int sentencaPosterior = posicaoDoDiminua + 1;
-                    resultado = sentencaAnterior - sentencaPosterior;
-                    printf("Resultado: %d\n", resultado);
+                strcpy(instrucao, token);
+
+                if (strcmp(instrucao, "multiplique") == 0) {
+                    multiplicacao = 1;
+                } else {
+                    token = strtok(NULL, " ");
+                    num = atoi(token);
+
+                    if (strcmp(instrucao, "some") == 0) {
+                        resultado += num;
+                    } else if (strcmp(instrucao, "diminua") == 0) {
+                        resultado -= num;
+                    }
                 }
             }
+            token = strtok(NULL, " ");
         }
+
+        printf("tbo-compiler: %d\n", resultado);
     }
 
     fclose(arquivoSaida);
