@@ -1,0 +1,9 @@
+variavel a = 10
+variavel b = 2
+mostrar a
+mostrar b
+a + b
+a - b
+a * b
+a / b
+ 
